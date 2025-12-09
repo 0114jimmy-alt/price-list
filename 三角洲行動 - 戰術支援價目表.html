@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<!-- saved from url=(0045)https://hilarious-custard-32ae43.netlify.app/ -->
+<html lang="zh-Hant"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三角洲行動 - 戰術支援價目表</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial Black', 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #0a0e14;
+      color: #e0e0e0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(255, 102, 0, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 85% 30%, rgba(0, 150, 255, 0.05) 0%, transparent 20%);
+      min-height: 100vh;
+    }
+
+    /* 導航標籤 */
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .tab {
+      padding: 12px 25px;
+      background: linear-gradient(180deg, #2a3240 0%, #1a1f29 100%);
+      border: 1px solid #333945;
+      border-radius: 5px 5px 0 0;
+      color: #8a9ba8;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      position: relative;
+      bottom: -1px;
+      z-index: 1;
+    }
+
+    .tab:hover {
+      background: linear-gradient(180deg, #333945 0%, #222831 100%);
+      color: #ffcc00;
+    }
+
+    .tab.active {
+      background: linear-gradient(180deg, #1a1f29 0%, #0a0e14 100%);
+      border-bottom: 1px solid #0a0e14;
+      color: #ff6600;
+      box-shadow: 0 -2px 10px rgba(255, 102, 0, 0.2);
+      z-index: 10;
+    }
+
+    /* 價格表通用樣式 */
+    .price-table {
+      width: 100%;
+      max-width: 900px;
+      background:
+        linear-gradient(135deg, #1a1f29 0%, #0f131a 100%),
+        url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="%231a1f29"/><path d="M0,50 L100,50 M50,0 L50,100" stroke="%23222a36" stroke-width="1"/><circle cx="20" cy="20" r="2" fill="%23222a36"/><circle cx="80" cy="30" r="3" fill="%23222a36"/><circle cx="40" cy="70" r="4" fill="%23222a36"/></svg>');
+      background-blend-mode: overlay;
+      border: 2px solid #333945;
+      border-radius: 8px;
+      box-shadow:
+        0 0 30px rgba(255, 102, 0, 0.2),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+      padding: 25px;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
+
+    .price-table.active {
+      display: block;
+    }
+
+    /* 頁面通用元素 */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #ff6600;
+      position: relative;
+    }
+
+    .delta-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .delta-badge span {
+      background: linear-gradient(90deg, #ff6600, #ffaa00);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-size: 2.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(255, 102, 0, 0.3);
+    }
+
+    .subtitle {
+      color: #8a9ba8;
+      font-size: 1rem;
+      letter-spacing: 3px;
+      margin-top: -5px;
+    }
+
+    .service-column {
+      border: 1px solid #2a3240;
+      border-radius: 5px;
+      padding: 20px;
+      background-color: rgba(22, 27, 37, 0.7);
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .service-column::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #ff6600, transparent);
+    }
+
+    .column-title {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #ffcc00;
+      font-size: 1.5rem;
+    }
+
+    .column-title .icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 10px;
+      filter: drop-shadow(0 0 3px #ffcc00);
+    }
+
+    .service-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px dashed #2a3240;
+    }
+
+    .service-item:last-child {
+      border-bottom: none;
+    }
+
+    .price {
+      color: #00ff9d;
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(0, 255, 157, 0.5);
+      background-color: rgba(0, 50, 30, 0.3);
+      padding: 3px 10px;
+      border-radius: 3px;
+      border: 1px solid #00ff9d;
+    }
+
+    .guarantee {
+      color: #66b3ff;
+      font-size: 1.1rem;
+      font-weight: bold;
+      text-align: right;
+      max-width: 60%;
+    }
+
+    .note {
+      margin-top: 15px;
+      padding: 10px;
+      background-color: rgba(255, 102, 0, 0.1);
+      border-left: 3px solid #ff6600;
+      font-size: 0.85rem;
+      color: #ffaa66;
+    }
+
+    .warning-note {
+      background-color: rgba(255, 50, 50, 0.1);
+      border-left: 3px solid #ff3333;
+      color: #ff6666;
+    }
+
+    .info-note {
+      background-color: rgba(0, 150, 255, 0.1);
+      border-left: 3px solid #0096ff;
+      color: #66b3ff;
+    }
+
+    .special-price {
+      color: #ff66ff;
+      font-size: 1.4rem;
+      font-weight: bold;
+      text-shadow: 0 0 8px rgba(255, 102, 255, 0.5);
+      background-color: rgba(80, 0, 80, 0.3);
+      padding: 5px 15px;
+      border-radius: 3px;
+      border: 1px solid #ff66ff;
+    }
+
+    .grid-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background-image:
+        linear-gradient(to right, rgba(255, 102, 0, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 102, 0, 0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    .corner-deco {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #ff6600;
+    }
+
+    .corner-tl {
+      top: 10px;
+      left: 10px;
+      border-right: none;
+      border-bottom: none;
+    }
+
+    .corner-tr {
+      top: 10px;
+      right: 10px;
+      border-left: none;
+      border-bottom: none;
+    }
+
+    .corner-bl {
+      bottom: 10px;
+      left: 10px;
+      border-right: none;
+      border-top: none;
+    }
+
+    .corner-br {
+      bottom: 10px;
+      right: 10px;
+      border-left: none;
+      border-top: none;
+    }
+
+    .footer-note {
+      margin-top: 25px;
+      text-align: center;
+      color: #8a9ba8;
+      font-size: 0.8rem;
+      padding-top: 15px;
+      border-top: 1px solid #2a3240;
+    }
+
+    /* 特殊樣式 */
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+    }
+
+    .betting-column {
+      background: linear-gradient(135deg, rgba(40, 0, 40, 0.5), rgba(22, 27, 37, 0.8));
+      border: 1px solid #660066;
+    }
+
+    .betting-column::before {
+      background: linear-gradient(90deg, #ff00ff, transparent);
+    }
+
+    .entertainment-column {
+      background: linear-gradient(135deg, rgba(0, 40, 40, 0.5), rgba(22, 27, 37, 0.8));
+      border: 1px solid #006666;
+    }
+
+    .entertainment-column::before {
+      background: linear-gradient(90deg, #00ffff, transparent);
+    }
+
+    .rules-list {
+      list-style-type: none;
+      padding-left: 10px;
+    }
+
+    .rules-list li {
+      padding: 8px 0;
+      border-bottom: 1px dashed #2a3240;
+      position: relative;
+      padding-left: 25px;
+    }
+
+    .rules-list li:before {
+      content: '▶';
+      color: #ff6600;
+      position: absolute;
+      left: 0;
+      font-size: 0.8rem;
+    }
+
+    /* 響應式調整 */
+    @media (max-width: 768px) {
+      .service-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+
+      .delta-badge span {
+        font-size: 2rem;
+      }
+
+      .tab {
+        padding: 10px 15px;
+        font-size: 0.8rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 導航標籤 -->
+  <div class="tab-container">
+    <div class="tab active" data-tab="page1">基礎/體驗單</div>
+    <div class="tab" data-tab="page2">航天賭約單</div>
+    <div class="tab" data-tab="page3">娛樂玩法</div>
+    <div class="tab" data-tab="page4">規則條款</div>
+  </div>
+
+  <!-- 頁面1: 基礎單 & 體驗單 -->
+  <div class="price-table active" id="page1">
+    <div class="grid-overlay"></div>
+    <div class="corner-deco corner-tl"></div>
+    <div class="corner-deco corner-tr"></div>
+    <div class="corner-deco corner-bl"></div>
+    <div class="corner-deco corner-br"></div>
+
+    <div class="header">
+      <div class="delta-badge">
+        <span>DELTA FORCE</span>
+      </div>
+      <div class="subtitle">戰術護航服務協議 - 基礎方案</div>
+    </div>
+
+    <div class="service-grid">
+      <!-- 左欄：基礎單 -->
+      <div class="service-column">
+        <div class="column-title">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>基礎單</span>
+        </div>
+
+        <div class="service-item">
+          <span class="price">500</span>
+          <span class="guarantee">保底 600w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">800</span>
+          <span class="guarantee">保底 900w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">1000</span>
+          <span class="guarantee">保底 1300w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">2000</span>
+          <span class="guarantee">保底 2300w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">8000</span>
+          <span class="guarantee">保底 8600w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">10000</span>
+          <span class="guarantee">保底 11888w</span>
+        </div>
+
+        <div class="note">
+          ※ 炸單補償 +100w (上限1000w)
+        </div>
+      </div>
+
+      <!-- 右欄：體驗單 -->
+      <div class="service-column">
+        <div class="column-title">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          <span>體驗單</span>
+        </div>
+
+        <div class="service-item" style="transition: 0.2s;">
+          <span class="price">200</span>
+          <span class="guarantee">保底 400w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">600</span>
+          <span class="guarantee">保底 750w</span>
+        </div>
+        <div class="service-item">
+          <span class="price">1500</span>
+          <span class="guarantee">保底 1700w</span>
+        </div>
+
+        <div class="note info-note" style="margin-top: 40px;">
+          <strong>進階服務：</strong><br>
+          • 航天絕密賭約單 (限單局帶出)<br>
+          • 娛樂玩法 (牛角單/自力根生)<br>
+          • 完整規則請參閱詳細條款
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <strong>戰術守則：</strong> 任務開始前請確認需求，配合打手指令。所有訂單須透過官方管道進行。
+    </div>
+  </div>
+
+  <!-- 頁面2: 航天絕密賭約單 -->
+  <div class="price-table" id="page2">
+    <div class="grid-overlay"></div>
+    <div class="corner-deco corner-tl"></div>
+    <div class="corner-deco corner-tr"></div>
+    <div class="corner-deco corner-bl"></div>
+    <div class="corner-deco corner-br"></div>
+
+    <div class="header">
+      <div class="delta-badge">
+        <span>航天絕密賭約單</span>
+      </div>
+      <div class="subtitle">高風險高回報 | 限單局帶出金額 | 玩的就是心跳</div>
+    </div>
+
+    <div class="service-column betting-column">
+      <div class="column-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="2" width="20" height="20" rx="5"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <circle cx="15.5" cy="8.5" r="1.5"></circle>
+          <path d="M8.5 14a3.5 3.5 0 0 0 7 0"></path>
+        </svg>
+        <span>賭約單 - 單局挑戰</span>
+      </div>
+
+      <div class="service-item">
+        <span class="special-price">1000</span>
+        <span class="guarantee">單局沒有 588w 不結單</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">1500</span>
+        <span class="guarantee">單局沒有 688w 不結單</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">2000</span>
+        <span class="guarantee">單局沒有 799w 不結單</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">2500</span>
+        <span class="guarantee">單局沒有 888w 不結單</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">3500</span>
+        <span class="guarantee">單局沒有 1288w 不結單</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">5500</span>
+        <span class="guarantee">單局沒有 1488w 不結單</span>
+      </div>
+    </div>
+
+    <div class="service-column betting-column">
+      <div class="column-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v20M2 12h20"></path>
+          <circle cx="12" cy="12" r="10"></circle>
+        </svg>
+        <span>稀有目標保底</span>
+      </div>
+
+      <div class="service-item">
+        <span class="special-price">588</span>
+        <span class="guarantee">沒出鍋保 688w</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">1088</span>
+        <span class="guarantee">必出鍋</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">1888</span>
+        <span class="guarantee">沒出油保 2000w</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">4888</span>
+        <span class="guarantee">必出油</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">5200</span>
+        <span class="guarantee">沒出心保 6888w<br><small>(出心結單)</small></span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">40000</span>
+        <span class="guarantee">必出心</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">90000</span>
+        <span class="guarantee">沒出心保 10888w</span>
+      </div>
+      <div class="service-item">
+        <span class="special-price">130000</span>
+        <span class="guarantee">必出淚保</span>
+      </div>
+    </div>
+
+    <div class="note warning-note">
+      <strong>⚠️ 賭約規則：</strong> 下訂後不可反悔或故意卡保底（如藏物品/丟槍械），發現直接結單。賭約內容不可更動，得失心重者勿下單。
+    </div>
+
+    <div class="footer-note">
+      <strong>賭約精神：</strong> 挑戰極限，信譽為本。玩的就是心跳，輸贏自負。
+    </div>
+  </div>
+
+  <!-- 頁面3: 娛樂玩法 -->
+  <div class="price-table" id="page3">
+    <div class="grid-overlay"></div>
+    <div class="corner-deco corner-tl"></div>
+    <div class="corner-deco corner-tr"></div>
+    <div class="corner-deco corner-bl"></div>
+    <div class="corner-deco corner-br"></div>
+
+    <div class="header">
+      <div class="delta-badge">
+        <span>娛樂玩法</span>
+      </div>
+      <div class="subtitle">趣味挑戰 | 客製化服務 | 特殊目標</div>
+    </div>
+
+    <div class="service-grid">
+      <div class="service-column entertainment-column">
+        <div class="column-title">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+            <path d="M8 4v16"></path>
+            <circle cx="18" cy="8" r="2"></circle>
+            <circle cx="18" cy="16" r="2"></circle>
+          </svg>
+          <span>牛角單</span>
+        </div>
+
+        <div class="service-item">
+          <span class="price">1088</span>
+          <span class="guarantee">保底 800w</span>
+        </div>
+        <div class="note">
+          ※ 一個牛角額外加 50w (無上限)
+        </div>
+
+        <div style="margin-top: 30px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 5px;">
+          <div style="color: #00ffff; font-size: 0.9rem; margin-bottom: 5px;">什麼是牛角？</div>
+          <div style="font-size: 0.8rem; color: #8a9ba8;">
+            牛角是遊戲中的特殊高價值物品，可重複獲取。每多獲得一個，結算金額額外增加。
+          </div>
+        </div>
+      </div>
+
+      <div class="service-column entertainment-column">
+        <div class="column-title">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20"></path>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+          <span>自力根生</span>
+        </div>
+
+        <div class="service-item">
+          <span class="price">1000</span>
+          <span class="guarantee">初始保底 500w</span>
+        </div>
+        <div class="note">
+          ※ 打手幫忙起裝，裝備會帶出去
+        </div>
+        <div class="note">
+          ※ 一個人加 100w，下局打手會幫忙打到金額
+        </div>
+
+        <div style="margin-top: 20px; padding: 15px; background: rgba(0, 0, 0, 0.3); border-radius: 5px;">
+          <div style="color: #00ffff; font-size: 0.9rem; margin-bottom: 5px;">服務說明：</div>
+          <div style="font-size: 0.8rem; color: #8a9ba8;">
+            適合想體驗完整成長過程的老闆。打手協助建立基礎裝備後，由老闆自行發展，後續提供支援。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note info-note">
+      <strong>📌 娛樂玩法特色：</strong> 趣味性高，規則彈性大，可根據老闆需求客製化挑戰內容。
+    </div>
+
+    <div class="footer-note">
+      <strong>娛樂精神：</strong> 享受過程，挑戰自我。在緊張的戰術行動中尋找樂趣。
+    </div>
+  </div>
+
+  <!-- 頁面4: 規則條款 -->
+  <div class="price-table" id="page4">
+    <div class="grid-overlay"></div>
+    <div class="corner-deco corner-tl"></div>
+    <div class="corner-deco corner-tr"></div>
+    <div class="corner-deco corner-bl"></div>
+    <div class="corner-deco corner-br"></div>
+
+    <div class="header">
+      <div class="delta-badge">
+        <span>服務規則條款</span>
+      </div>
+      <div class="subtitle">請仔細閱讀並遵守以下規則</div>
+    </div>
+
+    <div class="service-column">
+      <div class="column-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        </svg>
+        <span>基本規則</span>
+      </div>
+
+      <ul class="rules-list">
+        <li><strong>下單確認：</strong> 下單前請確認需求及價格，下單後10分鐘內可取消，避免臨時改單或爭議。</li>
+        <li><strong>錄影存證：</strong> 護航期間打手全程錄影，建議老闆也錄屏，發生爭議可以確保自身權益。</li>
+        <li><strong>配合指令：</strong> 任務開始請配合打手行動，如不配合或是干擾打手，打手有權直接結單。</li>
+        <li><strong>聯繫規範：</strong> 結束護航請勿遊戲內私下索要打手聯絡方式和私下談價格。</li>
+        <li><strong>官方渠道：</strong> 所有訂單一律透過官方 LINE，其他渠道恕不接待。</li>
+      </ul>
+    </div>
+
+    <div class="service-column">
+      <div class="column-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 9l6 6 6-6"></path>
+          <path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"></path>
+        </svg>
+        <span>賭約單特別規則</span>
+      </div>
+
+      <ul class="rules-list">
+        <li><strong>不可反悔：</strong> 賭約單下訂後不可反悔或故意卡保底，例如藏物品或丟槍械，發現直接結單。</li>
+        <li><strong>合約精神：</strong> 賭約內容及條約不可更動及耍賴，玩的就是心跳，得失心重者勿下單。</li>
+        <li><strong>禁止情勒：</strong> 不可私下聯繫打手情勒求吃多點，一切按約定執行。</li>
+      </ul>
+    </div>
+
+    <div class="service-column">
+      <div class="column-title">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>重要提醒</span>
+      </div>
+
+      <div class="note warning-note">
+        <strong>⚠️ 風險告知：</strong><br>
+        1. 遊戲帳號安全由老闆自行負責<br>
+        2. 服務過程中如遇遊戲官方封號，責任自負<br>
+        3. 請勿將帳號密碼交給非官方人員<br>
+        4. 交易請透過官方渠道，避免詐騙
+      </div>
+
+      <div class="note info-note" style="margin-top: 15px;">
+        <strong>📞 客服聯繫：</strong><br>
+        如有任何問題或爭議，請透過官方LINE客服反映，我們將在24小時內處理。
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <strong>最終解釋權：</strong> 本公司保留對上述規則的最終解釋權及修改權。版本更新日期：2024年1月
+    </div>
+  </div>
+
+  <script>
+    // 標籤切換功能
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // 移除所有標籤的active類
+        document.querySelectorAll('.tab').forEach(t => {
+          t.classList.remove('active');
+        });
+        // 隱藏所有頁面
+        document.querySelectorAll('.price-table').forEach(page => {
+          page.classList.remove('active');
+        });
+        // 激活當前標籤
+        this.classList.add('active');
+        // 顯示對應頁面
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    // 服務項目懸停效果
+    document.querySelectorAll('.service-item').forEach(item => {
+      item.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = 'rgba(255, 102, 0, 0.05)';
+        this.style.transform = 'translateX(3px)';
+        this.style.transition = 'all 0.2s ease';
+      });
+      item.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = '';
+        this.style.transform = '';
+      });
+    });
+    // 規則列表項懸停效果
+    document.querySelectorAll('.rules-list li').forEach(item => {
+      item.addEventListener('mouseenter', function() {
+        this.style.backgroundColor = 'rgba(255, 102, 0, 0.05)';
+        this.style.paddingLeft = '30px';
+        this.style.transition = 'all 0.2s ease';
+      });
+      item.addEventListener('mouseleave', function() {
+        this.style.backgroundColor = '';
+        this.style.paddingLeft = '25px';
+      });
+    });
+  </script>
+
+
+</body></html>
